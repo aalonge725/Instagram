@@ -1,10 +1,3 @@
-//
-//  SceneDelegate.m
-//  Instagram
-//
-//  Created by Abraham Alonge on 7/6/21.
-//
-
 #import "SceneDelegate.h"
 
 @interface SceneDelegate ()
