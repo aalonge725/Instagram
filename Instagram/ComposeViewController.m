@@ -1,7 +1,9 @@
 #import "ComposeViewController.h"
+#import "Post.h"
 
 @interface ComposeViewController ()
 
+@property (strong, nonatomic) IBOutlet UIImageView *photo;
 @property (strong, nonatomic) IBOutlet UITextView *caption;
 - (IBAction)didTapCancel:(UIBarButtonItem *)sender;
 - (IBAction)didTapSubmit:(UIBarButtonItem *)sender;
@@ -39,13 +41,23 @@
     UIImage *editedImage = info[UIImagePickerControllerEditedImage];
 
     // Do something with the images (based on your use case)
-
+    [self.photo setImage:originalImage];
+    
     // Dismiss UIImagePickerController to go back to your original view controller
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (IBAction)didTapSubmit:(UIBarButtonItem *)sender {
-
+    [Post postUserImage:self.photo.image withCaption:self.caption.text withCompletion:^(BOOL succeeded, NSError * _Nullable error) {
+        if (error != nil) {
+            // TODO: handle error
+            NSLog(@"Error posting picture: %@", error.localizedDescription);
+        } else {
+            // TODO: handle successful post
+            [self dismissViewControllerAnimated:YES completion:nil];
+            NSLog(@"Posted image successfully");
+        }
+    }];
 }
 
 - (IBAction)didTapCancel:(UIBarButtonItem *)sender {

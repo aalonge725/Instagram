@@ -88,13 +88,8 @@
                                 <rect key="frame" x="20" y="83" width="374" height="210"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5JS-vu-ES1">
-                                <rect key="frame" x="20" y="301" width="204" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Tap to take or choose a photo"/>
-                            </button>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" text="Test caption" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="hRT-Nd-uGw">
-                                <rect key="frame" x="20" y="351" width="374" height="47"/>
+                                <rect key="frame" x="20" y="301" width="374" height="148"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <color key="textColor" systemColor="labelColor"/>
@@ -119,6 +114,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="caption" destination="hRT-Nd-uGw" id="TfI-x5-dpF"/>
+                        <outlet property="photo" destination="Hmt-0F-IhZ" id="gXq-AG-dM5"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3ie-hc-04Y" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
