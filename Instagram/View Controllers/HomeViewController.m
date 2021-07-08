@@ -7,7 +7,7 @@
 @interface HomeViewController () <UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, strong) NSArray<Post *> *posts;
-@property (strong, nonatomic) IBOutlet UITableView *tableView;
+@property (nonatomic, strong) IBOutlet UITableView *tableView;
 @property (nonatomic, strong) UIRefreshControl *refreshControl;
 
 - (IBAction)didTapLogout:(UIBarButtonItem *)sender;
@@ -24,8 +24,9 @@
     
     [self fetchPosts];
     
-    self.refreshControl
-    
+    self.refreshControl = [[UIRefreshControl alloc] init];
+    [self.refreshControl addTarget:self action:@selector(fetchPosts) forControlEvents:UIControlEventValueChanged];
+    [self.tableView insertSubview:self.refreshControl atIndex:0];
 }
 
 - (void)fetchPosts {
@@ -40,11 +41,11 @@
             NSLog(@"Successfully fetched posts!");
             self.posts = posts;
             [self.tableView reloadData];
-        }
-        else {
+        } else {
             // TODO: handle error
             NSLog(@"Error fetching posts: %@", error.localizedDescription);
         }
+        [self.refreshControl endRefreshing];
     }];
 }
 
