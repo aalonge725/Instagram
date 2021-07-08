@@ -1,8 +1,14 @@
 #import "HomeViewController.h"
 #import "Parse/Parse.h"
 #import "LoginViewController.h"
+#import "Post.h"
+#import "PostCell.h"
 
-@interface HomeViewController ()
+@interface HomeViewController () <UITableViewDataSource, UITableViewDelegate>
+
+@property (nonatomic, strong) NSArray<Post *> *posts;
+@property (strong, nonatomic) IBOutlet UITableView *tableView;
+@property (nonatomic, strong) UIRefreshControl *refreshControl;
 
 - (IBAction)didTapLogout:(UIBarButtonItem *)sender;
 
@@ -12,6 +18,34 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.tableView.dataSource = self;
+    self.tableView.delegate = self;
+    
+    [self fetchPosts];
+    
+    self.refreshControl
+    
+}
+
+- (void)fetchPosts {
+    PFQuery *postQuery = [Post query];
+    [postQuery orderByDescending:@"createdAt"];
+    [postQuery includeKey:@"author"];
+    postQuery.limit = 20;
+
+    [postQuery findObjectsInBackgroundWithBlock:^(NSArray<Post *> * _Nullable posts, NSError * _Nullable error) {
+        if (posts) {
+            // TODO: do something with the data fetched
+            NSLog(@"Successfully fetched posts!");
+            self.posts = posts;
+            [self.tableView reloadData];
+        }
+        else {
+            // TODO: handle error
+            NSLog(@"Error fetching posts: %@", error.localizedDescription);
+        }
+    }];
 }
 
 - (IBAction)didTapLogout:(UIBarButtonItem *)sender {
@@ -21,6 +55,19 @@
                                                             
         [[UIApplication sharedApplication].keyWindow setRootViewController:loginViewController];
     }];
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return self.posts.count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    PostCell *cell = [tableView dequeueReusableCellWithIdentifier:@"PostCell"];
+    
+    Post *post = self.posts[indexPath.row];
+    [cell refreshData:post]; // TODO: rename method if appropriate
+    
+    return cell;
 }
 
 /*
