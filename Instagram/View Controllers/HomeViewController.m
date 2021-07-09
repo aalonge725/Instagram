@@ -1,8 +1,15 @@
 #import "HomeViewController.h"
 #import "Parse/Parse.h"
 #import "LoginViewController.h"
+#import "Post.h"
+#import "PostCell.h"
+#import "DetailsViewController.h"
 
-@interface HomeViewController ()
+@interface HomeViewController () <UITableViewDataSource, UITableViewDelegate>
+
+@property (nonatomic, strong) NSArray<Post *> *posts;
+@property (nonatomic, strong) IBOutlet UITableView *tableView;
+@property (nonatomic, strong) UIRefreshControl *refreshControl;
 
 - (IBAction)didTapLogout:(UIBarButtonItem *)sender;
 
@@ -12,6 +19,39 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.tableView.dataSource = self;
+    self.tableView.delegate = self;
+    
+    [self fetchPosts];
+    
+    self.refreshControl = [[UIRefreshControl alloc] init];
+    [self.refreshControl addTarget:self action:@selector(fetchPosts) forControlEvents:UIControlEventValueChanged];
+    [self.tableView insertSubview:self.refreshControl atIndex:0];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    NSIndexPath *selectedIndPath = self.tableView.indexPathForSelectedRow;
+    if (selectedIndPath) {
+        [self.tableView deselectRowAtIndexPath:selectedIndPath animated:animated];
+    }
+}
+
+- (void)fetchPosts {
+    PFQuery *postQuery = [Post query];
+    [postQuery orderByDescending:@"createdAt"];
+    [postQuery includeKey:@"author"];
+    [postQuery includeKey:@"createdAt"];
+    [postQuery includeKey:@"username"];
+    postQuery.limit = 20;
+
+    [postQuery findObjectsInBackgroundWithBlock:^(NSArray<Post *> * _Nullable posts, NSError * _Nullable error) {
+        if (posts) {
+            self.posts = posts;
+            [self.tableView reloadData];
+            [self.refreshControl endRefreshing];
+        }
+    }];
 }
 
 - (IBAction)didTapLogout:(UIBarButtonItem *)sender {
@@ -23,14 +63,33 @@
     }];
 }
 
-/*
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return self.posts.count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    PostCell *cell = [tableView dequeueReusableCellWithIdentifier:@"PostCell"];
+    
+    Post *post = self.posts[indexPath.row];
+    [cell refreshData:post];
+    
+    return cell;
+}
+
 #pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+    if ([segue.identifier isEqual:@"detailsSegue"]) {
+        UITableViewCell *tappedCell = sender;
+        NSIndexPath *indexPath = [self.tableView indexPathForCell:tappedCell];
+        Post *post = self.posts[indexPath.row];
+        
+        DetailsViewController *detailViewController = [segue destinationViewController];
+                
+        detailViewController.post = post;
+        
+//        [self.tableView reloadData];
+    }
 }
-*/
 
 @end

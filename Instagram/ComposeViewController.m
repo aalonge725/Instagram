@@ -1,9 +1,11 @@
 #import "ComposeViewController.h"
 #import "Post.h"
+#import "SceneDelegate.h"
+#import "HomeViewController.h"
 
 @interface ComposeViewController ()
 
-@property (strong, nonatomic) IBOutlet UIImageView *photo;
+@property (strong, nonatomic) IBOutlet UIImageView *image;
 @property (strong, nonatomic) IBOutlet UITextView *caption;
 - (IBAction)didTapCancel:(UIBarButtonItem *)sender;
 - (IBAction)didTapSubmit:(UIBarButtonItem *)sender;
@@ -18,44 +20,55 @@
     self.caption.layer.borderWidth = 2.0f;
     self.caption.layer.borderColor = [[UIColor lightGrayColor] CGColor];
     self.caption.layer.cornerRadius = 5;
+}
 
+- (IBAction)onTap:(id)sender {
     UIImagePickerController *imagePickerVC = [UIImagePickerController new];
     imagePickerVC.delegate = self;
     imagePickerVC.allowsEditing = YES;
-
+    
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-        imagePickerVC.sourceType = UIImagePickerControllerSourceTypeCamera;
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Photo" message:@"Would you like to take or select a photo?" preferredStyle:(UIAlertControllerStyleAlert)];
+        
+        UIAlertAction *takePhotoAction = [UIAlertAction actionWithTitle:@"Take" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            imagePickerVC.sourceType = UIImagePickerControllerSourceTypeCamera;
+            [self presentViewController:imagePickerVC animated:YES completion:nil];
+        }];
+        [alert addAction:takePhotoAction];
+        
+        UIAlertAction *selectPhotoAction = [UIAlertAction actionWithTitle:@"Select" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            imagePickerVC.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+            [self presentViewController:imagePickerVC animated:YES completion:nil];
+        }];
+        [alert addAction:selectPhotoAction];
+        
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        }];
+        [alert addAction:cancelAction];
+        
+        [self presentViewController:alert animated:YES completion:nil];
     } else {
-        NSLog(@"Camera 🚫 available so we will use photo library instead");
         imagePickerVC.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+        [self presentViewController:imagePickerVC animated:YES completion:nil];
     }
-
-    [self presentViewController:imagePickerVC animated:YES completion:nil];
-
 }
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
-
-    // Get the image captured by the UIImagePickerController
     UIImage *originalImage = info[UIImagePickerControllerOriginalImage];
     UIImage *editedImage = info[UIImagePickerControllerEditedImage];
 
-    // Do something with the images (based on your use case)
-    [self.photo setImage:originalImage];
+    [self.image setImage:editedImage];
     
-    // Dismiss UIImagePickerController to go back to your original view controller
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (IBAction)didTapSubmit:(UIBarButtonItem *)sender {
-    [Post postUserImage:self.photo.image withCaption:self.caption.text withCompletion:^(BOOL succeeded, NSError * _Nullable error) {
-        if (error != nil) {
-            // TODO: handle error
-            NSLog(@"Error posting picture: %@", error.localizedDescription);
-        } else {
-            // TODO: handle successful post
-            [self dismissViewControllerAnimated:YES completion:nil];
-            NSLog(@"Posted image successfully");
+    [Post postUserImage:self.image.image withCaption:self.caption.text withCompletion:^(BOOL succeeded, NSError * _Nullable error) {
+        if (error == nil) {
+            SceneDelegate *myDelegate = (SceneDelegate *)self.view.window.windowScene.delegate;
+                        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+                        HomeViewController *homeViewController = [storyboard instantiateViewControllerWithIdentifier:@"HomeViewController"];
+                        myDelegate.window.rootViewController = homeViewController;
         }
     }];
 }
