@@ -42,6 +42,7 @@
     [postQuery orderByDescending:@"createdAt"];
     [postQuery includeKey:@"author"];
     [postQuery includeKey:@"createdAt"];
+    [postQuery includeKey:@"username"];
     postQuery.limit = 20;
 
     [postQuery findObjectsInBackgroundWithBlock:^(NSArray<Post *> * _Nullable posts, NSError * _Nullable error) {
