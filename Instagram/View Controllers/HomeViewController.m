@@ -30,6 +30,13 @@
     [self.tableView insertSubview:self.refreshControl atIndex:0];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    NSIndexPath *selectedIndPath = self.tableView.indexPathForSelectedRow;
+    if (selectedIndPath) {
+        [self.tableView deselectRowAtIndexPath:selectedIndPath animated:animated];
+    }
+}
+
 - (void)fetchPosts {
     PFQuery *postQuery = [Post query];
     [postQuery orderByDescending:@"createdAt"];
@@ -39,15 +46,10 @@
 
     [postQuery findObjectsInBackgroundWithBlock:^(NSArray<Post *> * _Nullable posts, NSError * _Nullable error) {
         if (posts) {
-            // TODO: do something with the data fetched
-            NSLog(@"Successfully fetched posts!");
             self.posts = posts;
             [self.tableView reloadData];
-        } else {
-            // TODO: handle error
-            NSLog(@"Error fetching posts: %@", error.localizedDescription);
+            [self.refreshControl endRefreshing];
         }
-        [self.refreshControl endRefreshing];
     }];
 }
 
@@ -68,7 +70,7 @@
     PostCell *cell = [tableView dequeueReusableCellWithIdentifier:@"PostCell"];
     
     Post *post = self.posts[indexPath.row];
-    [cell refreshData:post]; // TODO: rename method if appropriate
+    [cell refreshData:post];
     
     return cell;
 }
@@ -85,7 +87,7 @@
                 
         detailViewController.post = post;
         
-        [self.tableView reloadData];
+//        [self.tableView reloadData];
     }
 }
 

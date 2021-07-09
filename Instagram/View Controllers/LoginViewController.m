@@ -26,10 +26,7 @@
         // TODO: alert
     } else {
         [newUser signUpInBackgroundWithBlock:^(BOOL succeeded, NSError * error) {
-            if (error != nil) {
-                NSLog(@"Error: %@", error.localizedDescription);
-            } else {
-                NSLog(@"User registered successfully");
+            if (error == nil) {
                 [self performSegueWithIdentifier:@"loginSegue" sender:self];
             }
         }];
@@ -44,25 +41,11 @@
         // TODO: alert
     } else {
         [PFUser logInWithUsernameInBackground:username password:password block:^(PFUser * user, NSError *  error) {
-            if (error != nil) {
-                NSLog(@"User log in failed: %@", error.localizedDescription);
-            } else {
-                NSLog(@"User logged in successfully");
+            if (error == nil) {
                 [self performSegueWithIdentifier:@"loginSegue" sender:self];
             }
         }];
     }
 }
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
-
 
 @end
