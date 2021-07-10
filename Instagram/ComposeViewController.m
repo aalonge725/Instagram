@@ -28,10 +28,25 @@
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
     UIImage *originalImage = info[UIImagePickerControllerOriginalImage];
     UIImage *editedImage = info[UIImagePickerControllerEditedImage];
+    UIImage *resized = [self resizeImage:editedImage withSize:CGSizeMake(300, 300)];
 
-    [self.image setImage:editedImage];
+    [self.image setImage:resized];
     
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (UIImage *)resizeImage:(UIImage *)image withSize:(CGSize)size {
+    UIImageView *resizedImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height)];
+
+    resizedImage.contentMode = UIViewContentModeScaleAspectFill;
+    resizedImage.image = image;
+
+    UIGraphicsBeginImageContext(size);
+    [resizedImage.layer renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+
+    return newImage;
 }
 
 - (IBAction)didTapSubmit:(UIBarButtonItem *)sender {
