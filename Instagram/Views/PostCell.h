@@ -1,6 +1,6 @@
+@import Parse;
 #import <UIKit/UIKit.h>
 #import "Post.h"
-@import Parse;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -12,7 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (strong, nonatomic) IBOutlet UILabel *username;
 @property (strong, nonatomic) Post *post;
 
-- (void)refreshData:(Post *)post;
+- (void)setData:(Post *)post;
 
 @end
 

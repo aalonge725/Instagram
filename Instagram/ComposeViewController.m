@@ -7,6 +7,7 @@
 
 @property (strong, nonatomic) IBOutlet UIImageView *image;
 @property (strong, nonatomic) IBOutlet UITextView *caption;
+
 - (IBAction)didTapCancel:(UIBarButtonItem *)sender;
 - (IBAction)didTapSubmit:(UIBarButtonItem *)sender;
 
@@ -16,13 +17,45 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    [self configureTextView];
+}
 
+- (IBAction)onTap:(id)sender {
+    [self createAndShowImagePicker];
+}
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
+    UIImage *originalImage = info[UIImagePickerControllerOriginalImage];
+    UIImage *editedImage = info[UIImagePickerControllerEditedImage];
+
+    [self.image setImage:editedImage];
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (IBAction)didTapSubmit:(UIBarButtonItem *)sender {
+    [Post postUserImage:self.image.image withCaption:self.caption.text withCompletion:^(BOOL succeeded, NSError * _Nullable error) {
+        if (error == nil) {
+            SceneDelegate *myDelegate = (SceneDelegate *)self.view.window.windowScene.delegate;
+                        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+                        HomeViewController *homeViewController = [storyboard instantiateViewControllerWithIdentifier:@"HomeViewController"];
+                        myDelegate.window.rootViewController = homeViewController;
+        }
+    }];
+}
+
+- (IBAction)didTapCancel:(UIBarButtonItem *)sender {
+    [self dismissViewControllerAnimated:true completion:nil];
+}
+
+- (void)configureTextView {
     self.caption.layer.borderWidth = 2.0f;
     self.caption.layer.borderColor = [[UIColor lightGrayColor] CGColor];
     self.caption.layer.cornerRadius = 5;
 }
 
-- (IBAction)onTap:(id)sender {
+- (void)createAndShowImagePicker {
     UIImagePickerController *imagePickerVC = [UIImagePickerController new];
     imagePickerVC.delegate = self;
     imagePickerVC.allowsEditing = YES;
@@ -53,36 +86,4 @@
     }
 }
 
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
-    UIImage *originalImage = info[UIImagePickerControllerOriginalImage];
-    UIImage *editedImage = info[UIImagePickerControllerEditedImage];
-
-    [self.image setImage:editedImage];
-    
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
-
-- (IBAction)didTapSubmit:(UIBarButtonItem *)sender {
-    [Post postUserImage:self.image.image withCaption:self.caption.text withCompletion:^(BOOL succeeded, NSError * _Nullable error) {
-        if (error == nil) {
-            SceneDelegate *myDelegate = (SceneDelegate *)self.view.window.windowScene.delegate;
-                        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-                        HomeViewController *homeViewController = [storyboard instantiateViewControllerWithIdentifier:@"HomeViewController"];
-                        myDelegate.window.rootViewController = homeViewController;
-        }
-    }];
-}
-
-- (IBAction)didTapCancel:(UIBarButtonItem *)sender {
-    [self dismissViewControllerAnimated:true completion:nil];
-}
 @end
-
-/*
-#pragma mark - Navigation
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
