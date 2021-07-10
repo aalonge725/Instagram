@@ -1,11 +1,5 @@
-//
-//  AppDelegate.m
-//  Instagram
-//
-//  Created by Abraham Alonge on 7/6/21.
-//
-
 #import "AppDelegate.h"
+#import "Parse/Parse.h"
 
 @interface AppDelegate ()
 
@@ -15,7 +9,6 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
     return YES;
 }
 
