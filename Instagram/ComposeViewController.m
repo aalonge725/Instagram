@@ -21,8 +21,12 @@
     [self configureTextView];
 }
 
-- (IBAction)onTap:(id)sender {
+- (IBAction)onImageViewTap:(id)sender {
     [self createAndShowImagePicker];
+}
+
+- (IBAction)onWhitespaceTap:(id)sender {
+    [self.view endEditing:true];
 }
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {

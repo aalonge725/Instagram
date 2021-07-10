@@ -47,6 +47,10 @@
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <gestureRecognizers/>
+                        <connections>
+                            <outletCollection property="gestureRecognizers" destination="znx-3F-1tZ" appends="YES" id="pzR-8f-q7b"/>
+                        </connections>
                     </view>
                     <connections>
                         <outlet property="passwordField" destination="F5y-Lh-ZRB" id="022-kI-bxj"/>
@@ -55,6 +59,11 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="znx-3F-1tZ">
+                    <connections>
+                        <action selector="onTap:" destination="BYZ-38-t0r" id="n8f-sH-XBW"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="232" y="121"/>
         </scene>
@@ -105,6 +114,9 @@
                         <viewLayoutGuide key="safeArea" id="1Px-SJ-OBX"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <gestureRecognizers/>
+                        <connections>
+                            <outletCollection property="gestureRecognizers" destination="8Ms-ZL-DPZ" appends="YES" id="xup-bi-G2z"/>
+                        </connections>
                     </view>
                     <navigationItem key="navigationItem" id="2P2-N3-8lF">
                         <barButtonItem key="leftBarButtonItem" title="Cancel" id="ufK-Zy-fkO">
@@ -126,7 +138,12 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3ie-hc-04Y" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <tapGestureRecognizer id="7qF-9O-3SY">
                     <connections>
-                        <action selector="onTap:" destination="8Me-lL-EGg" id="MpO-k5-8Ey"/>
+                        <action selector="onImageViewTap:" destination="8Me-lL-EGg" id="MpO-k5-8Ey"/>
+                    </connections>
+                </tapGestureRecognizer>
+                <tapGestureRecognizer id="8Ms-ZL-DPZ">
+                    <connections>
+                        <action selector="onWhitespaceTap:" destination="8Me-lL-EGg" id="ads-bH-nTz"/>
                     </connections>
                 </tapGestureRecognizer>
             </objects>
