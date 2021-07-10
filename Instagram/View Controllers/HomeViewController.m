@@ -20,9 +20,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.tableView.dataSource = self;
-    self.tableView.delegate = self;
-    
     [self fetchPosts];
     
     self.refreshControl = [[UIRefreshControl alloc] init];
@@ -31,18 +28,16 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-    NSIndexPath *selectedIndPath = self.tableView.indexPathForSelectedRow;
-    if (selectedIndPath) {
-        [self.tableView deselectRowAtIndexPath:selectedIndPath animated:animated];
+    NSIndexPath *selectedIndexPath = self.tableView.indexPathForSelectedRow;
+    if (selectedIndexPath) {
+        [self.tableView deselectRowAtIndexPath:selectedIndexPath animated:animated];
     }
 }
 
 - (void)fetchPosts {
     PFQuery *postQuery = [Post query];
     [postQuery orderByDescending:@"createdAt"];
-    [postQuery includeKey:@"author"];
-    [postQuery includeKey:@"createdAt"];
-    [postQuery includeKey:@"username"];
+    [postQuery includeKeys:@[@"author", @"createdAt", @"username"]];
     postQuery.limit = 20;
 
     [postQuery findObjectsInBackgroundWithBlock:^(NSArray<Post *> * _Nullable posts, NSError * _Nullable error) {
@@ -71,7 +66,7 @@
     PostCell *cell = [tableView dequeueReusableCellWithIdentifier:@"PostCell"];
     
     Post *post = self.posts[indexPath.row];
-    [cell refreshData:post];
+    [cell setData:post];
     
     return cell;
 }
@@ -86,9 +81,7 @@
         
         DetailsViewController *detailViewController = [segue destinationViewController];
                 
-        detailViewController.post = post;
-        
-//        [self.tableView reloadData];
+        detailViewController.post = post;        
     }
 }
 

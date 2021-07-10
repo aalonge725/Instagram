@@ -7,7 +7,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) Post *post;
 
-- (void)refreshData:(Post *)post;
+- (void)setData:(Post *)post;
 
 @end
 

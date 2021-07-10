@@ -1,6 +1,6 @@
+@import Parse;
 #import "DetailsViewController.h"
 #import "Post.h"
-@import Parse;
 
 @interface DetailsViewController ()
 
@@ -16,13 +16,15 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self refreshData:self.post];
+    [self setData:self.post];
 }
 
-- (void)refreshData:(Post *)post {
+- (void)setData:(Post *)post {
     self.post = post;
+
     self.image.file = self.post.image;
     [self.image loadInBackground];
+
     self.caption.text = self.post.caption;
     self.username.text = self.post.author.username;
     self.timestamp.text = [NSDateFormatter localizedStringFromDate:self.post.createdAt dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterShortStyle];
